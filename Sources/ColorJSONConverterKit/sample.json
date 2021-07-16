@@ -1,0 +1,49 @@
+{
+  "pallets": [
+    {
+      "baseName": "red",
+      "colors": [
+        {
+          "label": "50",
+          "colorContext": "universal",
+          "red": 255,
+          "blue": 235,
+          "green": 238
+        },
+        {
+          "label": "100",
+          "colorContext": "light",
+          "hex": "FFCDD2"
+        },
+        {
+          "label": "100",
+          "colorContext": "dark",
+          "hex": "#FFCCBC"
+        }
+      ]
+    }
+  ],
+  "colorFolders": [
+    {
+      "name": "Goodpatch",
+      "folders": [],
+      "colors": [
+        {
+          "name": "appKey",
+          "colorContext": "universal",
+          "value": "blue-500"
+        },
+        {
+          "name": "base",
+          "colorContext": "light",
+          "value": "white-100"
+        },
+        {
+          "name": "base",
+          "colorContext": "dark",
+          "value": "black-100"
+        }
+      ]
+    }
+  ]
+}
