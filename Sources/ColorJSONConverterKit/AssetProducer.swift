@@ -13,7 +13,7 @@ internal class AssetProducer {
     private let json: ColorJSON
     private let encoder = JSONEncoder()
 
-    private var pallets = Dictionary<String, AssetColors>()
+    private var colorDict: [String: Contents] = [:]
     
     init(json: ColorJSON) {
         self.json = json
@@ -26,25 +26,30 @@ internal class AssetProducer {
         // MARK: パレット部分の書き出し
         guard let palletFolderPath = try createAssetFolder(folderPath: "Pallet", in: assetFolderPath) else { return }
 
-        // TODO: まずはContextだけ違うものをまとめないと...
         for pallet in json.pallets {
-            guard let colorFolderPath = try createFolder(folderName: pallet.baseName + ".colorset", in: palletFolderPath) else { return }
-
+            let colors = Contents.map(pallet)
+            for (name, contents) in colors {
+                guard let colorFolderPath = try createAssetFolder(folderPath: name, in: palletFolderPath) else { return }
+                try writeFile(with: contents, folderPath: colorFolderPath, fileName: "Contents.json")
+                colorDict[name] = contents
+            }
         }
-
         
         // MARK: セマンティクス部分の書き出し
+        guard let semanticsFolderPath = try createAssetFolder(folderPath: "Semantics", in: assetFolderPath) else { return }
+
+        try writeColorFolders(json.colorFolders, basePath: semanticsFolderPath)
     }
 
-    private func createPallet() {
-        for pallet in json.pallets {
-            for color in pallet.colors {
-                let colorName = pallet.baseName + "-" + color.label
-                if let currentPallet = pallets[colorName] {
-                    pallets[colorName] = AssetColors(colors: currentPallet.colors + [AssetColor.map(color: color)])
-                } else {
-                    pallets[colorName] = AssetColors(colors: [AssetColor.map(color: color)])
-                }
+    private func writeColorFolders(_ folders: [ColorFolder], basePath: String) throws {
+        for colorFolder in folders {
+            guard let colorSetFolderPath = try createAssetFolder(folderPath: colorFolder.name, in: basePath) else { fatalError("Invalid Format") }
+            if colorFolder.folders.count > 0 {
+                try writeColorFolders(colorFolder.folders, basePath: colorSetFolderPath)
+            }
+            for color in colorFolder.colors {
+                let palletContents = colorDict[color.value]
+                // TODO: こっちもColorContextごとに何かやらなきゃだ
             }
         }
     }
