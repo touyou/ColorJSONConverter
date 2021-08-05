@@ -13,7 +13,7 @@ internal class AssetProducer {
     private let json: ColorJSON
     private let encoder = JSONEncoder()
 
-    private var colorDict: [String: Contents] = [:]
+    private var colorPallet: [String: Contents] = [:]
     
     init(json: ColorJSON) {
         self.json = json
@@ -31,7 +31,7 @@ internal class AssetProducer {
             for (name, contents) in colors {
                 guard let colorFolderPath = try createAssetFolder(folderPath: name, in: palletFolderPath) else { return }
                 try writeFile(with: contents, folderPath: colorFolderPath, fileName: "Contents.json")
-                colorDict[name] = contents
+                colorPallet[name] = contents
             }
         }
         
@@ -47,9 +47,19 @@ internal class AssetProducer {
             if colorFolder.folders.count > 0 {
                 try writeColorFolders(colorFolder.folders, basePath: colorSetFolderPath)
             }
+            var semanticColor: [String: Contents] = [:]
             for color in colorFolder.colors {
-                let palletContents = colorDict[color.value]
-                // TODO: こっちもColorContextごとに何かやらなきゃだ
+                guard let pallet = colorPallet[color.value] else { fatalError("\(color.value) is Not Found in Pallet") }
+                let contents = Contents.map(pallet, with: color)
+                if semanticColor[color.name] != nil {
+                    semanticColor[color.name] = semanticColor[color.name]!.append(contents)
+                } else {
+                    semanticColor[color.name] = contents
+                }
+            }
+            for (name, colorContents) in semanticColor {
+                guard let colorFolderPath = try createAssetFolder(folderPath: name, in: colorSetFolderPath) else { fatalError("Invalid Format") }
+                try writeFile(with: colorContents, folderPath: colorFolderPath, fileName: "Contents.json")
             }
         }
     }

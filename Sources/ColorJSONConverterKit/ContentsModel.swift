@@ -21,6 +21,10 @@ struct Contents: Codable {
         self.colors = colors
     }
 
+    func append(_ contents: Contents) -> Contents {
+        Contents(colors: (self.colors ?? []) + (contents.colors ?? []))
+    }
+
     static func map(_ pallet: Pallet) -> [(String, Contents)] {
         let baseName = pallet.baseName
         var colorDict: [String: [PalletColor]] = [:]
@@ -39,6 +43,34 @@ struct Contents: Codable {
             contentWithNames.append((name, Contents(colors: contentColors)))
         }
         return contentWithNames
+    }
+
+    static func map(_ contents: Contents, with color: SemanticColor) -> Contents {
+        switch color.colorContext {
+        case .dark:
+            if let darkColor = contents.colors?.first(where: { $0.appearances != nil }) {
+                return Contents(colors: [darkColor])
+            } else if let darkColor = contents.colors?[0] {
+                return Contents(colors: [
+                    ContentsColor(color: darkColor.color, appearances: ContentsAppearance.darkAppearance, idiom: "universal")
+                ])
+            } else {
+                fatalError("Invalid Pallet")
+            }
+        case .light:
+            if let lightColor = contents.colors?.first(where: {$0.appearances == nil}) {
+                return Contents(colors: [lightColor])
+            } else if let lightColor = contents.colors?[0] {
+                return Contents(colors: [
+                    ContentsColor(color: lightColor.color, appearances: nil, idiom: "universal")
+                ])
+            } else {
+                fatalError("Invalid Pallet")
+            }
+        case .universal:
+            return contents
+        }
+        return Contents(colors: [])
     }
 }
 
@@ -60,7 +92,7 @@ struct ContentsColor: Codable {
             case .universal, .light:
                 return nil
             case .dark:
-                return ContentsAppearance(appearance: "luminosity", value: "dark")
+                return ContentsAppearance.darkAppearance
             }
         }()
         let contentColor: ContentsColorData = {
@@ -101,4 +133,6 @@ struct ContentsColorData: Codable {
 struct ContentsAppearance: Codable {
     let appearance: String
     let value: String
+
+    static let darkAppearance = ContentsAppearance(appearance: "luminosity", value: "dark")
 }
