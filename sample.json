@@ -1,7 +1,7 @@
 {
   "pallets": [
     {
-      "baseName": "red",
+      "baseName": "blue",
       "colors": [
         {
           "label": "50",
@@ -19,7 +19,12 @@
           "label": "100",
           "colorContext": "dark",
           "hex": "#FFCCBC"
-        }
+        },
+        {
+          "label": "500",
+          "colorContext": "universal",
+          "hex": "FFCDD2"
+        },
       ]
     }
   ],
@@ -31,17 +36,17 @@
         {
           "name": "appKey",
           "colorContext": "universal",
-          "value": "blue-500"
+          "value": "blue500"
         },
         {
           "name": "base",
           "colorContext": "light",
-          "value": "white-100"
+          "value": "blue100"
         },
         {
           "name": "base",
           "colorContext": "dark",
-          "value": "black-100"
+          "value": "blue100"
         }
       ]
     }

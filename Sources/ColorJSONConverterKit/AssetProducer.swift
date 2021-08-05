@@ -20,16 +20,19 @@ internal class AssetProducer {
     }
     
     func produce(assetName: String = "Color") throws {
+        print("---produce start---")
         let assetFolderName = assetName + ".xcassets"
         guard let assetFolderPath = try createAssetFolder(folderPath: assetFolderName) else { return }
+        print("🎉 Asset Folder created")
 
         // MARK: パレット部分の書き出し
         guard let palletFolderPath = try createAssetFolder(folderPath: "Pallet", in: assetFolderPath) else { return }
+        print("🎉 Pallet Folder created")
 
         for pallet in json.pallets {
             let colors = Contents.map(pallet)
             for (name, contents) in colors {
-                guard let colorFolderPath = try createAssetFolder(folderPath: name, in: palletFolderPath) else { return }
+                guard let colorFolderPath = try createAssetFolder(folderPath: name + ".colorset", in: palletFolderPath) else { return }
                 try writeFile(with: contents, folderPath: colorFolderPath, fileName: "Contents.json")
                 colorPallet[name] = contents
             }
@@ -37,8 +40,10 @@ internal class AssetProducer {
         
         // MARK: セマンティクス部分の書き出し
         guard let semanticsFolderPath = try createAssetFolder(folderPath: "Semantics", in: assetFolderPath) else { return }
+        print("🎉 Semantics Folder created")
 
         try writeColorFolders(json.colorFolders, basePath: semanticsFolderPath)
+        print("---produce completed---")
     }
 
     private func writeColorFolders(_ folders: [ColorFolder], basePath: String) throws {
@@ -58,7 +63,7 @@ internal class AssetProducer {
                 }
             }
             for (name, colorContents) in semanticColor {
-                guard let colorFolderPath = try createAssetFolder(folderPath: name, in: colorSetFolderPath) else { fatalError("Invalid Format") }
+                guard let colorFolderPath = try createAssetFolder(folderPath: name + ".colorset", in: colorSetFolderPath) else { fatalError("Invalid Format") }
                 try writeFile(with: colorContents, folderPath: colorFolderPath, fileName: "Contents.json")
             }
         }
@@ -80,8 +85,9 @@ internal class AssetProducer {
             return parent + "/" + folderName
         }()
 
-        guard let url = URL(string: newFolderPath) else { return nil }
+        let url = URL(fileURLWithPath: newFolderPath)
 
+        print("📂 create folder: \(url.absoluteString)")
         do {
             try fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
             return newFolderPath
@@ -94,6 +100,7 @@ internal class AssetProducer {
     /// ファイルを書き込む関数（private）
     private func writeFile(with content: Contents, folderPath: String, fileName: String) throws {
         let filePath = folderPath + "/" + fileName
+        print("📄 write file: \(filePath)")
         try fileManager.createFile(atPath: filePath, contents: encoder.encode(content), attributes: nil)
     }
 }

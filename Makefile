@@ -10,7 +10,7 @@ install: build
     install ".build/release/cjc" "$(bindir)"
     install ".build/release/libSwiftSyntax.dylib" "$(libdir)"
     install_name_tool -change \
-        ".build/x86_64-apple-macosx10.10/release/libSwiftSyntax.dylib" \
+        ".build/x86_64-apple-macosx/release/libSwiftSyntax.dylib" \
         "$(libdir)/libSwiftSyntax.dylib" \
         "$(bindir)/csc"
 

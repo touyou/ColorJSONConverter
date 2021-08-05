@@ -23,10 +23,12 @@ public struct Target {
     public func convert() throws {
         // NOTE: init時にファイルが存在していることを確認済みのため
         let data = fileManager.contents(atPath: path)!
-        
+
+        print("---decoding start---")
         let decoder = JSONDecoder()
         let json = try decoder.decode(ColorJSON.self, from: data)
-        
+
+        print("---decoding done---")
         let producer = AssetProducer(json: json)
         try producer.produce()
     }
