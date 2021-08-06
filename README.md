@@ -18,7 +18,7 @@ $ cjc convert color.json
 ## JSONの書き方
 
 - 必ず`pallets`を用意してください
-- 色の指定は16進数表記、もしくはRGB指定で行えます（RGBは0~255の整数、alpha値は0.0~1.0で指定）
+- 色の指定は16進数表記、もしくはRGB指定で行えます（RGBは0から255の整数、alpha値は0.0kara1.0で指定）
 - パレットの色名は baseName + label で表されます。
 
 ```json:sample.json
@@ -82,3 +82,8 @@ $ cjc convert color.json
 このファイルを実際にかけると以下のようなカラーアセットが生成されます
 
 ![sample.png](Assets/sample.png)
+
+## ライセンス
+[MIT License.](LICENSE)
+
+
