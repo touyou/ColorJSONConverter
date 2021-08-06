@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Contents: Codable {
+struct Contents: Encodable {
     let info: ContentsInfo
     let colors: [ContentsColor]?
 
@@ -52,7 +52,7 @@ struct Contents: Codable {
                 return Contents(colors: [darkColor])
             } else if let darkColor = contents.colors?[0] {
                 return Contents(colors: [
-                    ContentsColor(color: darkColor.color, appearances: ContentsAppearance.darkAppearance, idiom: "universal")
+                    ContentsColor(color: darkColor.color, appearances: [ContentsAppearance.darkAppearance], idiom: "universal")
                 ])
             } else {
                 fatalError("Invalid Pallet")
@@ -74,25 +74,25 @@ struct Contents: Codable {
     }
 }
 
-struct ContentsInfo: Codable {
+struct ContentsInfo: Encodable {
     let author: String
     let version: Int
 
     static let standard = ContentsInfo(author: "xcode", version: 1)
 }
 
-struct ContentsColor: Codable {
+struct ContentsColor: Encodable {
     let color: ContentsColorData
-    let appearances: ContentsAppearance?
+    let appearances: [ContentsAppearance]?
     let idiom: String
 
     static func map(_ palletColor: PalletColor) -> ContentsColor {
-        let appearances: ContentsAppearance? = {
+        let appearances: [ContentsAppearance]? = {
             switch palletColor.colorContext {
             case .universal, .light:
                 return nil
             case .dark:
-                return ContentsAppearance.darkAppearance
+                return [ContentsAppearance.darkAppearance]
             }
         }()
         let contentColor: ContentsColorData = {
@@ -113,12 +113,12 @@ struct ContentsColor: Codable {
     }
 }
 
-struct ContentsColorData: Codable {
-    struct ColorValue: Codable {
-        let alpha: Float
-        let blue: Float
-        let green: Float
-        let red: Float
+struct ContentsColorData: Encodable {
+    struct ColorValue: Encodable {
+        let alpha: String
+        let blue: String
+        let green: String
+        let red: String
     }
 
     let colorSpace: String
@@ -126,13 +126,28 @@ struct ContentsColorData: Codable {
 
     init(red: Float, green: Float, blue: Float, alpha: Float, colorSpace: String = "display-p3") {
         self.colorSpace = colorSpace
-        self.components = ColorValue(alpha: alpha, blue: blue, green: green, red: red)
+        self.components = ColorValue(
+            alpha: alpha.formattedString,
+            blue: blue.formattedString,
+            green: green.formattedString,
+            red: red.formattedString)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case colorSpace = "color-space"
+        case components
     }
 }
 
-struct ContentsAppearance: Codable {
+struct ContentsAppearance: Encodable {
     let appearance: String
     let value: String
 
     static let darkAppearance = ContentsAppearance(appearance: "luminosity", value: "dark")
+}
+
+private extension Float {
+    var formattedString: String {
+        String(format: "%.3f", self)
+    }
 }

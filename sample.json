@@ -6,24 +6,24 @@
         {
           "label": "50",
           "colorContext": "universal",
-          "red": 255,
-          "blue": 235,
-          "green": 238
+          "red": 177,
+          "green": 210,
+          "blue": 237
         },
         {
           "label": "100",
           "colorContext": "light",
-          "hex": "FFCDD2"
+          "hex": "0B6FCA"
         },
         {
           "label": "100",
           "colorContext": "dark",
-          "hex": "#FFCCBC"
+          "hex": "#76B7ED"
         },
         {
           "label": "500",
           "colorContext": "universal",
-          "hex": "FFCDD2"
+          "hex": "3097ED"
         },
       ]
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ColorJSON: Codable {
+struct ColorJSON: Decodable {
     let pallets: [Pallet]
     let colorFolders: [ColorFolder]
 }
@@ -18,12 +18,12 @@ enum ColorContext: String, Codable {
     case universal
 }
 
-struct Pallet: Codable {
+struct Pallet: Decodable {
     let baseName: String
     let colors: [PalletColor]
 }
 
-struct PalletColor: Codable {
+struct PalletColor: Decodable {
     let label: String
     let colorContext: ColorContext
     
@@ -35,13 +35,13 @@ struct PalletColor: Codable {
     let hex: String?
 }
 
-struct ColorFolder: Codable {
+struct ColorFolder: Decodable {
     let name: String
     let folders: [ColorFolder]
     let colors: [SemanticColor]
 }
 
-struct SemanticColor: Codable {
+struct SemanticColor: Decodable {
     let name: String
     let colorContext: ColorContext
     let value: String
