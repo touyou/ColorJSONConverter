@@ -19,7 +19,7 @@ internal class AssetProducer {
         self.json = json
     }
     
-    func produce(assetName: String = "Color") throws {
+    func produce(assetName: String) throws {
         print("---produce start---")
         let assetFolderName = assetName + ".xcassets"
         guard let assetFolderPath = try createAssetFolder(folderPath: assetFolderName) else { return }
@@ -43,6 +43,9 @@ internal class AssetProducer {
         print("🎉 Semantics Folder created")
 
         try writeColorFolders(json.colorFolders, basePath: semanticsFolderPath)
+        if let colors = json.colors {
+            try writeColors(colors, colorSetFolderPath: semanticsFolderPath)
+        }
         print("---produce completed---")
     }
 
@@ -52,30 +55,34 @@ internal class AssetProducer {
             if colorFolder.folders.count > 0 {
                 try writeColorFolders(colorFolder.folders, basePath: colorSetFolderPath)
             }
-            var semanticColor: [String: Contents] = [:]
-            for color in colorFolder.colors {
-                if let pallet = colorPallet[color.value] {
-                    let contents = Contents.map(pallet, with: color)
-                    if semanticColor[color.name] != nil {
-                        semanticColor[color.name] = semanticColor[color.name]!.append(contents)
-                    } else {
-                        semanticColor[color.name] = contents
-                    }
-                } else if let customColorHex = color.customColorHex {
-                    let contents = Contents.map(Contents(colors: [ContentsColor.map(customColorHex)]), with: color)
-                    if semanticColor[color.name] != nil {
-                        semanticColor[color.name] = semanticColor[color.name]!.append(contents)
-                    } else {
-                        semanticColor[color.name] = contents
-                    }
+            try writeColors(colorFolder.colors, colorSetFolderPath: colorSetFolderPath)
+        }
+    }
+
+    private func writeColors(_ colors: [SemanticColor], colorSetFolderPath: String) throws {
+        var semanticColor: [String: Contents] = [:]
+        for color in colors {
+            if let pallet = colorPallet[color.value] {
+                let contents = Contents.map(pallet, with: color)
+                if semanticColor[color.name] != nil {
+                    semanticColor[color.name] = semanticColor[color.name]!.append(contents)
                 } else {
-                    fatalError("\(color.value) is Not Found in Pallet")
+                    semanticColor[color.name] = contents
                 }
+            } else if let customColorHex = color.customColorHex {
+                let contents = Contents.map(Contents(colors: [ContentsColor.map(customColorHex)]), with: color)
+                if semanticColor[color.name] != nil {
+                    semanticColor[color.name] = semanticColor[color.name]!.append(contents)
+                } else {
+                    semanticColor[color.name] = contents
+                }
+            } else {
+                fatalError("\(color.value) is Not Found in Pallet")
             }
-            for (name, colorContents) in semanticColor {
-                guard let colorFolderPath = try createAssetFolder(folderPath: name + ".colorset", in: colorSetFolderPath) else { fatalError("Invalid Format") }
-                try writeFile(with: colorContents, folderPath: colorFolderPath, fileName: "Contents.json")
-            }
+        }
+        for (name, colorContents) in semanticColor {
+            guard let colorFolderPath = try createAssetFolder(folderPath: name + ".colorset", in: colorSetFolderPath) else { fatalError("Invalid Format") }
+            try writeFile(with: colorContents, folderPath: colorFolderPath, fileName: "Contents.json")
         }
     }
 

@@ -10,6 +10,7 @@ import Foundation
 struct ColorJSON: Decodable {
     let pallets: [Pallet]
     let colorFolders: [ColorFolder]
+    let colors: [SemanticColor]?
 }
 
 enum ColorContext: String, Codable {

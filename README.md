@@ -6,12 +6,12 @@
 
 ```sh
 $ make install
-$ cjc convert color.json
+$ cjc convert color.json Generated
 ```
 
 ### 注意
 
-- 現在は書き出しファイルはColor.xcassets固定になっています
+- 最後の引数を指定しない場合はColor.xcassetsに固定になります
 - コマンドを実行した場所に作成されます
 - `cjc help`で簡易的なヘルプを表示できます
 
