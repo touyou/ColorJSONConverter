@@ -70,7 +70,7 @@ internal class AssetProducer {
                     semanticColor[color.name] = contents
                 }
             } else if let customColorHex = color.customColorHex {
-                let contents = Contents.map(Contents(colors: [ContentsColor.map(customColorHex)]), with: color)
+                let contents = Contents.map(Contents(colors: [ContentsColor.map(customColorHex, context: color.colorContext)]), with: color)
                 if semanticColor[color.name] != nil {
                     semanticColor[color.name] = semanticColor[color.name]!.append(contents)
                 } else {

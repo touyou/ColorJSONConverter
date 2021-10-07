@@ -112,12 +112,20 @@ struct ContentsColor: Encodable {
         return ContentsColor(color: contentColor, appearances: appearances, idiom: "universal")
     }
 
-    static func map(_ customColor: String) -> ContentsColor {
+    static func map(_ customColor: String, context: ColorContext) -> ContentsColor {
+        let appearances: [ContentsAppearance]? = {
+            switch context {
+            case .universal, .light:
+                return nil
+            case .dark:
+                return [ContentsAppearance.darkAppearance]
+            }
+        }()
         let contentColor: ContentsColorData = {
             let (red, green, blue, alpha) = hexToRGBA(customColor)
             return ContentsColorData(red: red, green: green, blue: blue, alpha: alpha)
         }()
-        return ContentsColor(color: contentColor, appearances: nil, idiom: "universal")
+        return ContentsColor(color: contentColor, appearances: appearances, idiom: "universal")
     }
 }
 
