@@ -54,12 +54,22 @@ internal class AssetProducer {
             }
             var semanticColor: [String: Contents] = [:]
             for color in colorFolder.colors {
-                guard let pallet = colorPallet[color.value] else { fatalError("\(color.value) is Not Found in Pallet") }
-                let contents = Contents.map(pallet, with: color)
-                if semanticColor[color.name] != nil {
-                    semanticColor[color.name] = semanticColor[color.name]!.append(contents)
+                if let pallet = colorPallet[color.value] {
+                    let contents = Contents.map(pallet, with: color)
+                    if semanticColor[color.name] != nil {
+                        semanticColor[color.name] = semanticColor[color.name]!.append(contents)
+                    } else {
+                        semanticColor[color.name] = contents
+                    }
+                } else if let customColorHex = color.customColorHex {
+                    let contents = Contents.map(Contents(colors: [ContentsColor.map(customColorHex)]), with: color)
+                    if semanticColor[color.name] != nil {
+                        semanticColor[color.name] = semanticColor[color.name]!.append(contents)
+                    } else {
+                        semanticColor[color.name] = contents
+                    }
                 } else {
-                    semanticColor[color.name] = contents
+                    fatalError("\(color.value) is Not Found in Pallet")
                 }
             }
             for (name, colorContents) in semanticColor {

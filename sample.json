@@ -47,6 +47,12 @@
           "name": "base",
           "colorContext": "dark",
           "value": "blue100"
+        },
+        {
+          "name": "background",
+          "colorContext": "universal",
+          "value": "custom",
+          "customColorHex": "#111111"
         }
       ]
     }

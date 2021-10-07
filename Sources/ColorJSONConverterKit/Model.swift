@@ -45,4 +45,5 @@ struct SemanticColor: Decodable {
     let name: String
     let colorContext: ColorContext
     let value: String
+    let customColorHex: String?
 }
