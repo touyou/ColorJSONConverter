@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "ColorJSONConverter",
+    platforms: [.macOS(.v11)],
     products: [
         .executable(name: "cjc", targets: ["ColorJSONConverter"]),
         .library(name: "ColorJSONConverterKit", targets: ["ColorJSONConverterKit"]),
