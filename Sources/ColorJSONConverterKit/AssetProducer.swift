@@ -8,15 +8,21 @@
 import Foundation
 
 internal class AssetProducer {
-    
+    private enum ConverterError: Error {
+        case unknown
+    }
+
     private let fileManager = FileManager.default
     private let json: ColorJSON
     private let encoder = JSONEncoder()
 
+    private var basePath: String?
+
     private var colorPallet: [String: Contents] = [:]
     
-    init(json: ColorJSON) {
+    init(json: ColorJSON, basePath: String? = nil) {
         self.json = json
+        self.basePath = basePath
     }
     
     func produce(assetName: String) throws {
@@ -94,7 +100,7 @@ internal class AssetProducer {
 
     /// フォルダを作る関数（private）
     private func createFolder(folderName: String, in parent: String? = nil) -> String? {
-        let currentDir = fileManager.currentDirectoryPath
+        let currentDir = basePath ?? fileManager.currentDirectoryPath
         let newFolderPath = { () -> String in
             guard let parent = parent else {
                 return currentDir + "/" + folderName

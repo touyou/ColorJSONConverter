@@ -1,6 +1,7 @@
-# ColorJSONConverter α版
+# ColorJSONConverter α 版
 
-独自のフォーマットからXcodeのカラーアセットを作成できるCLIツールです。
+独自のフォーマットから Xcode のカラーアセットを作成できる CLI ツールおよび macOS アプリです。
+※ 実運用しつつアップデートしているため一部ここに記載されていない使用方法が存在しています。
 
 ## 使い方
 
@@ -9,16 +10,26 @@ $ make install
 $ cjc convert color.json Generated
 ```
 
+もしくは
+
+```sh
+$ make open
+```
+
+でプロジェクトを開いたのちに実行すると以下のような GUI で操作が可能です。
+
+![ui.png](Assets/ui.png)
+
 ### 注意
 
-- 最後の引数を指定しない場合はColor.xcassetsに固定になります
+- 最後の引数を指定しない場合は Color.xcassets に固定になります
 - コマンドを実行した場所に作成されます
 - `cjc help`で簡易的なヘルプを表示できます
 
-## JSONの書き方
+## JSON の書き方
 
 - 必ず`pallets`を用意してください
-- 色の指定は16進数表記、もしくはRGB指定で行えます（RGBは0から255の整数、alpha値は0.0kara1.0で指定）
+- 色の指定は 16 進数表記、もしくは RGB 指定で行えます（RGB は 0 から 255 の整数、alpha 値は 0.0kara1.0 で指定）
 - パレットの色名は baseName + label で表されます。
 
 ```json:sample.json
@@ -84,6 +95,5 @@ $ cjc convert color.json Generated
 ![sample.png](Assets/sample.png)
 
 ## ライセンス
+
 [MIT License.](LICENSE)
-
-

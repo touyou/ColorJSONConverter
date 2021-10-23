@@ -20,7 +20,7 @@ public struct Target {
         self.path = path
     }
     
-    public func convert(name: String = "Color") throws {
+    public func convert(name: String = "Color", basePath: String? = nil) throws {
         // NOTE: init時にファイルが存在していることを確認済みのため
         let data = fileManager.contents(atPath: path)!
 
@@ -29,7 +29,7 @@ public struct Target {
         let json = try decoder.decode(ColorJSON.self, from: data)
 
         print("---decoding done---")
-        let producer = AssetProducer(json: json)
+        let producer = AssetProducer(json: json, basePath: basePath)
         try producer.produce(assetName: name)
     }
 }
