@@ -97,7 +97,7 @@ struct ContentsColor: Encodable {
         }()
         let contentColor: ContentsColorData = {
             if let hex = palletColor.hex {
-                let (red, green, blue, alpha) = hexToRGBA(hex)
+                let (red, green, blue, alpha) = hexToSplitHex(hex)
                 return ContentsColorData(red: red, green: green, blue: blue, alpha: alpha)
             } else {
                 guard let red = palletColor.red,
@@ -122,7 +122,7 @@ struct ContentsColor: Encodable {
             }
         }()
         let contentColor: ContentsColorData = {
-            let (red, green, blue, alpha) = hexToRGBA(customColor)
+            let (red, green, blue, alpha) = hexToSplitHex(customColor)
             return ContentsColorData(red: red, green: green, blue: blue, alpha: alpha)
         }()
         return ContentsColor(color: contentColor, appearances: appearances, idiom: "universal")
@@ -146,7 +146,18 @@ struct ContentsColorData: Encodable {
             alpha: alpha.formattedString,
             blue: blue.formattedString,
             green: green.formattedString,
-            red: red.formattedString)
+            red: red.formattedString
+        )
+    }
+
+    init(red: String, green: String, blue: String, alpha: Float, colorSpace: String = "srgb") {
+        self.colorSpace = colorSpace
+        self.components = ColorValue(
+            alpha: alpha.formattedString,
+            blue: blue,
+            green: green,
+            red: red
+        )
     }
 
     enum CodingKeys: String, CodingKey {
